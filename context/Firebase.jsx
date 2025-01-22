@@ -10,7 +10,7 @@ const firebaseConfig = {
   messagingSenderId: "115201119523",
   appId: "1:115201119523:web:2320061e425a83d317e896"
 };
-const app = initializeApp(firebaseConfig);
+export const app = initializeApp(firebaseConfig);
 const FireBaseAuth=getAuth(app);
 const GoogleAuth=new GoogleAuthProvider();
 const SignUpWithEmailAndPassword=(email,password)=>createUserWithEmailAndPassword(FireBaseAuth,email,password);
@@ -20,13 +20,16 @@ export const FirebaseProvider=({children})=>{
   // implement the logic check the user or logedIn or not,
 // using Auth state change; because hook only call in function components
  const [User,setUser] = useState(null)
+ const [Save_email, setSave_email] = useState("")
+//  let Save_email=null
 useEffect(() => {
-  onAuthStateChanged(FireBaseAuth,(user)=>{
+  onAuthStateChanged(FireBaseAuth,async ( user)=>{
+    await setSave_email(user.email)
     if(user) setUser(user)
     else setUser(null);
   })
 },[])
  const ISLoggedIn=User ?true :false;
-  return <FirebaseContext.Provider value={{SignUpWithEmailAndPassword,SignInWithEmailAndPassword,SigninWithGoogle,ISLoggedIn}}>{children}</FirebaseContext.Provider>
+  return <FirebaseContext.Provider value={{SignUpWithEmailAndPassword,SignInWithEmailAndPassword,SigninWithGoogle,ISLoggedIn,Save_email}}>{children}</FirebaseContext.Provider>
 }
 export  const useFireBase=()=>useContext(FirebaseContext);
